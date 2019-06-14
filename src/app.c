@@ -3,12 +3,13 @@
 #include <stdlib.h>
 
 void readAndCount(int vet[], char arquivo[]);
+void insertNode(int count, char c);   
 
 void readAndCount(int vet[], char arquivo[]){
-    FILE *fp;
-    char ch;
+   FILE *fp;
+   char ch;
 
-    fp = fopen(arquivo, "r");
+   fp = fopen(arquivo, "r");
  
    if (fp == NULL){
       perror("Error while opening the file.\n");
@@ -23,20 +24,20 @@ void readAndCount(int vet[], char arquivo[]){
 
 int main(){
 
-    int contagemLetras[256];
-    for(int i = 0; i < 256; i++){
-        contagemLetras[i] = 0;
-    }
+   int contagemLetras[256];
+   for(int i = 0; i < 256; i++){
+      contagemLetras[i] = 0;
+   }
 
-    char arquivo[] = "../texts/first.txt";
+   char arquivo[] = "../texts/first.txt";
 
-    readAndCount(contagemLetras,arquivo);
+   readAndCount(contagemLetras,arquivo);
 
-    for(int i = 0; i < 256; i++){
-         if(contagemLetras[i] != 0){
-            printf("%c -- %d\n",i,contagemLetras[i]);
-         }
-    }
+   for(int i = 0; i < 256; i++){
+      if(contagemLetras[i] != 0){
+         printf("%c -- %d\n",i,contagemLetras[i]);
+      }
+   }
 
-    return 0;
+   return 0;
 }
