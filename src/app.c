@@ -2,6 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+typedef struct NODE{
+   int freq;
+   char letra;
+   struct NODE* left;
+   struct NODE* right;
+} NODE;
+
 void readAndCount(int vet[], char arquivo[]);
 void insertNode(int count, char c);   
 
@@ -24,6 +31,9 @@ void readAndCount(int vet[], char arquivo[]){
 
 int main(){
 
+   NODE* head = NULL; 
+   NODE* temp = (NODE*) malloc(sizeof (NODE));
+
    int contagemLetras[256];
    for(int i = 0; i < 256; i++){
       contagemLetras[i] = 0;
@@ -35,9 +45,13 @@ int main(){
 
    for(int i = 0; i < 256; i++){
       if(contagemLetras[i] != 0){
-         printf("%c -- %d\n",i,contagemLetras[i]);
+         temp->letra = i;
+         temp->freq = contagemLetras[i];
+         head = temp;
       }
    }
+
+   printf("%d", head->freq);
 
    return 0;
 }
