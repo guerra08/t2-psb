@@ -33,7 +33,7 @@ void sort(struct NODE **head){
     struct NODE *temp1;
     struct NODE *temp2;
 
-    temp1=*head;
+    temp1=*head; //Início da lista
 
     while(temp1 != NULL)
       {
@@ -78,7 +78,7 @@ int main(){
    
    int count = 0;
 
-   for(int i = 0; i < 256; i++){
+   for(int i = 0; i < 256; i++){ //Monta a linked list sem ordenar
       if(contagemLetras[i] != 0){
          NODE* temp = (NODE*) malloc(sizeof (NODE));
          temp->letra = i;
@@ -95,8 +95,9 @@ int main(){
       }
    }
 
-   sort(&head);
+   sort(&head); //Ordena a lista
 
+   //Testes para verificar ordem
    struct NODE *toPrint = head;
    while(toPrint->next != NULL){
       printf("%d - %c\n",toPrint->freq,toPrint->letra);
