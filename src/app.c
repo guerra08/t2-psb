@@ -10,6 +10,12 @@ typedef struct NODE{
    struct NODE* next;
 } NODE;
 
+typedef struct TREENODE{
+   int freq;
+   struct NODE* left;
+   struct NODE* right;
+} TREENODE;
+
 void readAndCount(int vet[], char arquivo[]);
 void sort(struct NODE **head);
 
@@ -39,7 +45,7 @@ void sort(struct NODE **head){
       {
         for(temp2=temp1->next;temp2!=NULL;temp2=temp2->next) //Loop para
           { 
-            if(temp2->freq > temp1->freq)
+            if(temp2->freq < temp1->freq)
               {   
                   int freq = temp1->freq;
                   char letra = temp1->letra;
@@ -66,6 +72,7 @@ int main(){
    //head é a referencia para a lista
    NODE *head = NULL;
    NODE *aux = NULL;
+   TREENODE *first;
 
    int contagemLetras[256];
    for(int i = 0; i < 256; i++){
@@ -104,6 +111,12 @@ int main(){
       toPrint = toPrint->next;
    }
    printf("%d - %c\n",toPrint->freq,toPrint->letra);
+
+   struct NODE *treeAux = head;
+   
+   first->freq = treeAux->freq + treeAux->next->freq;
+
+   printf("%d",first->freq);
 
    return 0;
 }
