@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct NODE{
    int freq;
@@ -8,9 +9,10 @@ typedef struct NODE{
    struct NODE* left;
    struct NODE* right;
    struct NODE* next;
+   bool used;
 } NODE;
 
-typedef struct TREENODE{
+typedef struct TREENODE{ //LEFT = 0, RIGHT = 1
    int freq;
    struct NODE* left;
    struct NODE* right;
@@ -90,6 +92,7 @@ int main(){
          NODE* temp = (NODE*) malloc(sizeof (NODE));
          temp->letra = i;
          temp->freq = contagemLetras[i];
+         temp->used = false;
          if(count == 0){
             head = temp;
             aux = head;
@@ -115,8 +118,23 @@ int main(){
    struct NODE *treeAux = head;
    
    first->freq = treeAux->freq + treeAux->next->freq;
+   first->left = treeAux;
+   first->right = treeAux->next;
+   treeAux->used = true;
+   treeAux->next->used = true;
 
-   printf("%d",first->freq);
+   treeAux = treeAux->next;
+
+   printf("First treenode: %d\n",first->freq);
+
+   //FIRST é o primeiro nodo
+
+   while(treeAux->next != NULL){
+      if(treeAux->freq + treeAux->next->freq > first->freq){ //Cria um novo TREENODE com o next
+         printf("treenode com o next\n");
+         treeAux=treeAux->next;
+      }
+   }
 
    return 0;
 }
