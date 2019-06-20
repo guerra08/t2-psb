@@ -11,6 +11,7 @@ typedef struct NODE{
 } NODE;
 
 void readAndCount(int vet[], char arquivo[]);
+void sort(struct NODE **head);
 
 void readAndCount(int vet[], char arquivo[]){
    FILE *fp;
@@ -28,10 +29,43 @@ void readAndCount(int vet[], char arquivo[]){
    fclose(fp);
 }
 
+void sort(struct NODE **head){
+    struct NODE *temp1;
+    struct NODE *temp2;
+
+    temp1=*head;
+
+    while(temp1 != NULL)
+      {
+        for(temp2=temp1->next;temp2!=NULL;temp2=temp2->next) //Loop para
+          { 
+            if(temp2->freq > temp1->freq)
+              {   
+                  int freq = temp1->freq;
+                  char letra = temp1->letra;
+                  struct NODE* left = temp1->left;
+                  struct NODE* right = temp1->right;
+                  
+                  temp1->freq = temp2->freq;
+                  temp1->letra = temp2->letra;
+                  temp1->left = temp2->left;
+                  temp1->right = temp2->right;
+
+                  temp2->freq = freq;
+                  temp2->letra = letra;
+                  temp2->left = left;
+                  temp2->right = right;
+              }
+           }
+         temp1=temp1->next;
+       }
+}
+
 int main(){
 
-   NODE* head = NULL; 
-   NODE* aux = NULL;
+   //head é a referencia para a lista
+   NODE *head = NULL;
+   NODE *aux = NULL;
 
    int contagemLetras[256];
    for(int i = 0; i < 256; i++){
@@ -61,12 +95,14 @@ int main(){
       }
    }
 
-   NODE* perc = head;
-   while(perc->next != NULL){
-      printf("%d",perc->freq);
-      perc = perc->next;
+   sort(&head);
+
+   struct NODE *toPrint = head;
+   while(toPrint->next != NULL){
+      printf("%d - %c\n",toPrint->freq,toPrint->letra);
+      toPrint = toPrint->next;
    }
-   printf("%d",perc->freq);
+   printf("%d - %c\n",toPrint->freq,toPrint->letra);
 
    return 0;
 }
