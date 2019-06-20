@@ -7,17 +7,16 @@ typedef struct NODE{
    char letra;
    struct NODE* left;
    struct NODE* right;
+   struct NODE* next;
 } NODE;
 
 void readAndCount(int vet[], char arquivo[]);
-void insertNode(int count, char c);   
 
 void readAndCount(int vet[], char arquivo[]){
    FILE *fp;
    char ch;
 
    fp = fopen(arquivo, "r");
- 
    if (fp == NULL){
       perror("Error while opening the file.\n");
       return;
@@ -32,7 +31,7 @@ void readAndCount(int vet[], char arquivo[]){
 int main(){
 
    NODE* head = NULL; 
-   NODE* temp = (NODE*) malloc(sizeof (NODE));
+   NODE* aux = NULL;
 
    int contagemLetras[256];
    for(int i = 0; i < 256; i++){
@@ -42,16 +41,32 @@ int main(){
    char arquivo[] = "../texts/first.txt";
 
    readAndCount(contagemLetras,arquivo);
+   
+   int count = 0;
 
    for(int i = 0; i < 256; i++){
       if(contagemLetras[i] != 0){
+         NODE* temp = (NODE*) malloc(sizeof (NODE));
          temp->letra = i;
          temp->freq = contagemLetras[i];
-         head = temp;
+         if(count == 0){
+            head = temp;
+            aux = head;
+         }
+         else{
+            aux->next = temp;
+            aux = temp;
+         }
+         count++;
       }
    }
 
-   printf("%d", head->freq);
+   NODE* perc = head;
+   while(perc->next != NULL){
+      printf("%d",perc->freq);
+      perc = perc->next;
+   }
+   printf("%d",perc->freq);
 
    return 0;
 }
