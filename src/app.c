@@ -18,6 +18,8 @@ void sort(struct NODE **head);
 void printTree(NODE *root, int space);
 void printCall(NODE *root) ;
 
+//Lê o arquivo desejado e armazena a quantidade de cada caractere em um vetor
+//A posição no vetor corresponde ao valor decimal do caractere lido.
 void readAndCount(int vet[], char arquivo[]){
    FILE *fp;
    char ch;
@@ -34,6 +36,8 @@ void readAndCount(int vet[], char arquivo[]){
    fclose(fp);
 }
 
+//Realiza um Bubble Sort na lista encadeada, ordenando de forma crescente.
+//Código utilizado inspirado por: https://stackoverflow.com/questions/40623432/sort-a-linked-list-using-c
 void sort(struct NODE **head){
     struct NODE *temp1;
     struct NODE *temp2;
@@ -61,85 +65,100 @@ void sort(struct NODE **head){
       
 }
 
-void printTree(NODE *root, int space) 
-{ 
-    // Base case 
-    if (root == NULL) 
-        return; 
-  
-    // Increase distance between levels 
-    space += COUNT; 
-  
-    // Process right child first 
-    printTree(root->right, space); 
-  
-    // Print current node after space 
-    // count 
-    printf("\n"); 
-    for (int i = COUNT; i < space; i++) 
-        printf(" "); 
-    printf("%c\n", root->letra); 
-  
-    // Process left child 
-    printTree(root->left, space); 
+//Realiza o output da árvore gerada.
+//Código utilizado adaptado de: https://www.geeksforgeeks.org/print-binary-tree-2-dimensions/
+void printTree(NODE *root, int space) { 
+   if (root == NULL) 
+      return; 
+
+   space += COUNT; 
+
+   printTree(root->right, space); 
+
+   printf("\n"); 
+   for (int i = COUNT; i < space; i++) 
+      printf(" "); 
+   printf("%c\n", root->letra); 
+
+   // Process left child 
+   printTree(root->left, space); 
 } 
-  
-// Wrapper over print2DUtil() 
-void printCall(NODE *root) 
-{ 
+
+//Chamada principal para realizar o output da arvore.
+//Código utilizado adaptado de: https://www.geeksforgeeks.org/print-binary-tree-2-dimensions/
+void printCall(NODE *root) { 
    printTree(root, 0); 
 } 
 
+//MAIN METHOD
 int main(){
 
    //head é a referencia para a lista
+   //Inicializa as variáveis necessárias
    NODE *head = NULL;
    NODE *aux = NULL;
    NODE *treeN = NULL;
    NODE *lastTN = NULL;
    NODE *treeRoot = NULL;
 
-   int contagemLetras[256];
-   for(int i = 0; i < 256; i++){
+   //Vetor para armazenar a contagem de cada caractere lido
+   int contagemLetras[5000];
+   for(int i = 0; i < 5000; i++){
+      //Inicializa a contagem com 0
       contagemLetras[i] = 0;
    }
 
+   //Arquivo a ser lido
    char arquivo[] = "../texts/teste01.txt";
 
+   //Lê o arquivo e armazena as contagems em contagemLetras
    readAndCount(contagemLetras,arquivo);
    
    int count = 0;
-
-   for(int i = 0; i < 256; i++){ //Monta a linked list sem ordenar
+   //Bloco que monta a lista encadeada sem ordenar os seus elementos
+   for(int i = 0; i < 5000; i++){
+      //Percorre todo o vetor com as contagens
       if(contagemLetras[i] != 0){
+         //Se houver pelo menos uma ocorrência do caractere
+         printf("%c -- %d\n", i,contagemLetras[i]);
+         //Cria-se um novo nodo na heap
          NODE* temp = (NODE*) malloc(sizeof (NODE));
          temp->letra = i;
          temp->freq = contagemLetras[i];
          temp->used = false;
+         //Se for a primeira iteração, realiza-se a criação do head da lista
          if(count == 0){
             head = temp;
             aux = head;
          }
+         //Caso contrário, o nodo da heap é colocado como next do head.
          else{
             aux->next = temp;
             aux = temp;
+            //Aux torna-se o novo nodo adicionado
          }
          count++;
+         
       }
    }
 
-   sort(&head); //Ordena a lista
+   //Ordena a lista encadeada criada no bloco anterior.
+   //Passa-se se o endereço do head.
+   sort(&head);
 
-   //Testes para verificar ordem
+   //Escreve os elementos da lista encadeada de maneira ordenada.
    struct NODE *toPrint = head;
+
    while(toPrint->next != NULL){
       printf("%d - %c\n",toPrint->freq,toPrint->letra);
       toPrint = toPrint->next;
    }
+
    printf("%d - %c\n",toPrint->freq,toPrint->letra);
 
    struct NODE *treeAux = head;
 
+   //É alocado espaço na heap para armazenar o último nodo da árvore (dois caracteres com menor quantidade)
    struct NODE *last_tree = (NODE*) malloc(sizeof (NODE));
    
    last_tree->freq = treeAux->freq + treeAux->next->freq;
@@ -185,6 +204,7 @@ int main(){
    treeRoot->left = lastTN;
    treeRoot->right = treeN;
 
+   //Output da árvore criada
    printCall(treeRoot); 
 
    return 0;
