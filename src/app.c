@@ -6,17 +6,11 @@
 typedef struct NODE{
    int freq;
    char letra;
+   struct NODE* next;
    struct NODE* left;
    struct NODE* right;
-   struct NODE* next;
    bool used;
 } NODE;
-
-typedef struct TREENODE{ //LEFT = 0, RIGHT = 1
-   int freq;
-   struct NODE* left;
-   struct NODE* right;
-} TREENODE;
 
 void readAndCount(int vet[], char arquivo[]);
 void sort(struct NODE **head);
@@ -43,26 +37,20 @@ void sort(struct NODE **head){
 
     temp1=*head; //Início da lista
 
-    while(temp1 != NULL)
+    while(temp1 != NULL) //Percorre toda a lista encadeada
       {
-        for(temp2=temp1->next;temp2!=NULL;temp2=temp2->next) //Loop para
+        for(temp2=temp1->next;temp2!=NULL;temp2=temp2->next) //Loop para verificar todos
           { 
             if(temp2->freq < temp1->freq)
               {   
                   int freq = temp1->freq;
                   char letra = temp1->letra;
-                  struct NODE* left = temp1->left;
-                  struct NODE* right = temp1->right;
                   
                   temp1->freq = temp2->freq;
                   temp1->letra = temp2->letra;
-                  temp1->left = temp2->left;
-                  temp1->right = temp2->right;
 
                   temp2->freq = freq;
                   temp2->letra = letra;
-                  temp2->left = left;
-                  temp2->right = right;
               }
            }
          temp1=temp1->next;
@@ -74,7 +62,9 @@ int main(){
    //head é a referencia para a lista
    NODE *head = NULL;
    NODE *aux = NULL;
-   TREENODE *first;
+   NODE *treeN = NULL;
+   NODE *lastTN = NULL;
+   NODE *treeRoot = NULL;
 
    int contagemLetras[256];
    for(int i = 0; i < 256; i++){
@@ -116,27 +106,48 @@ int main(){
    printf("%d - %c\n",toPrint->freq,toPrint->letra);
 
    struct NODE *treeAux = head;
+
+   struct NODE *last_tree = (NODE*) malloc(sizeof (NODE));
    
-   first->freq = treeAux->freq + treeAux->next->freq;
-   first->left = treeAux;
-   first->right = treeAux->next;
+   last_tree->freq = treeAux->freq + treeAux->next->freq;
+   last_tree->left = treeAux;
+   last_tree->right = treeAux->next;
    treeAux->used = true;
    treeAux->next->used = true;
 
    treeAux = treeAux->next;
+   treeAux = treeAux->next;
 
-   printf("First treenode: %d\n",first->freq);
+   treeN = last_tree;
 
    //FIRST é o primeiro nodo
 
+   int caux = 0;
+
    while(treeAux->next != NULL){
-      if(treeAux->freq + treeAux->next->freq > first->freq){ //Cria um novo TREENODE com o next
+      struct NODE* new = (NODE*) malloc(sizeof (NODE));
+      if((treeAux->freq + treeAux->next->freq) < (treeN->freq + treeAux->freq)){ //Cria um novo TREENODE com o next + atual
          printf("treenode com o next\n");
-         treeAux=treeAux->next;
+         new->freq = treeAux->freq + treeAux->next->freq;
+         new->left = treeAux;
+         new->right = treeAux->next;
+         treeAux->used = true;
+         treeAux->next->used = true;
+         treeN = new;
       }
       else{
          printf("treenode com o anterior\n");
+         printf("Aux - %d\n",treeAux->freq);
+         new->freq = treeAux->freq + treeN->freq;
+         new->left = treeAux;
+         new->right = treeN;
+         treeAux->used = true;
+         treeAux->next->used = true;
+         treeN = new;
       }
+
+      printf("NEW -> %d\n",new->freq);
+      treeAux=treeAux->next;
    }
 
    return 0;
