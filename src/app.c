@@ -134,6 +134,9 @@ int main(){
          printf("treenode com o next\n");
          treeAux=treeAux->next;
       }
+      else{
+         printf("treenode com o anterior\n");
+      }
    }
 
    return 0;
