@@ -16,7 +16,28 @@ typedef struct NODE{
 void readAndCount(int vet[], char arquivo[]);
 void sort(struct NODE **head);
 void printTree(NODE *root, int space);
-void printCall(NODE *root) ;
+void printCall(NODE *root);
+void printPreorder(struct NODE* node, char dir);
+
+void printPreorder(struct NODE* node, char dir) { 
+
+   if (node == NULL){
+      printf("\n"); 
+      return;
+   }
+   if(dir == 'l'){
+      printf("0");
+   }
+   if(dir == 'r'){
+      printf("1");
+   }
+
+   printf("%c", node->letra);  
+
+   printPreorder(node->left,'l');   
+
+   printPreorder(node->right,'r'); 
+} 
 
 //Lê o arquivo desejado e armazena a quantidade de cada caractere em um vetor
 //A posição no vetor corresponde ao valor decimal do caractere lido.
@@ -109,7 +130,7 @@ int main(){
    }
 
    //Arquivo a ser lido
-   char arquivo[] = "../texts/teste01.txt";
+   char arquivo[] = "../texts/teste02.txt";
 
    //Lê o arquivo e armazena as contagems em contagemLetras
    readAndCount(contagemLetras,arquivo);
@@ -206,6 +227,8 @@ int main(){
 
    //Output da árvore criada
    printCall(treeRoot); 
+
+   printPreorder(treeRoot,'n'); 
 
    return 0;
 }
