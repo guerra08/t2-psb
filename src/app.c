@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#define COUNT 10 
 
 typedef struct NODE{
    int freq;
@@ -14,6 +15,8 @@ typedef struct NODE{
 
 void readAndCount(int vet[], char arquivo[]);
 void sort(struct NODE **head);
+void printTree(NODE *root, int space);
+void printCall(NODE *root) ;
 
 void readAndCount(int vet[], char arquivo[]){
    FILE *fp;
@@ -55,7 +58,37 @@ void sort(struct NODE **head){
            }
          temp1=temp1->next;
        }
+      
 }
+
+void printTree(NODE *root, int space) 
+{ 
+    // Base case 
+    if (root == NULL) 
+        return; 
+  
+    // Increase distance between levels 
+    space += COUNT; 
+  
+    // Process right child first 
+    printTree(root->right, space); 
+  
+    // Print current node after space 
+    // count 
+    printf("\n"); 
+    for (int i = COUNT; i < space; i++) 
+        printf(" "); 
+    printf("%c\n", root->letra); 
+  
+    // Process left child 
+    printTree(root->left, space); 
+} 
+  
+// Wrapper over print2DUtil() 
+void printCall(NODE *root) 
+{ 
+   printTree(root, 0); 
+} 
 
 int main(){
 
@@ -71,7 +104,7 @@ int main(){
       contagemLetras[i] = 0;
    }
 
-   char arquivo[] = "../texts/first.txt";
+   char arquivo[] = "../texts/teste01.txt";
 
    readAndCount(contagemLetras,arquivo);
    
@@ -124,31 +157,35 @@ int main(){
 
    int caux = 0;
 
-   while(treeAux->next != NULL){
+   while((treeAux->next != NULL)){
       struct NODE* new = (NODE*) malloc(sizeof (NODE));
       if((treeAux->freq + treeAux->next->freq) < (treeN->freq + treeAux->freq)){ //Cria um novo TREENODE com o next + atual
-         printf("treenode com o next\n");
          new->freq = treeAux->freq + treeAux->next->freq;
          new->left = treeAux;
          new->right = treeAux->next;
          treeAux->used = true;
          treeAux->next->used = true;
+         lastTN = treeN;
          treeN = new;
       }
       else{
-         printf("treenode com o anterior\n");
-         printf("Aux - %d\n",treeAux->freq);
          new->freq = treeAux->freq + treeN->freq;
          new->left = treeAux;
          new->right = treeN;
          treeAux->used = true;
          treeAux->next->used = true;
+         lastTN = treeN;
          treeN = new;
       }
-
-      printf("NEW -> %d\n",new->freq);
       treeAux=treeAux->next;
    }
+
+   treeRoot = (NODE*) malloc(sizeof (NODE));;
+   treeRoot->freq = lastTN->freq + treeN->freq;
+   treeRoot->left = lastTN;
+   treeRoot->right = treeN;
+
+   printCall(treeRoot); 
 
    return 0;
 }
